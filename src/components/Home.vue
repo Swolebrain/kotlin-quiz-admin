@@ -106,12 +106,16 @@
         })
           .then(res => {
             console.log(res);
+            res.headers.forEach(function (val, key) {
+              console.log(key, '->', val);
+            });
             if (res.status !== 200) throw new Error('Error: ' + res.status);
-            return res.json();
+            if (res.headers.get('Content-Type').indexOf('json') !== -1) return res.json();
+            return res.text();
           })
           .then(res => {
             console.log(res);
-            this.questions = res;
+            if (Array.isArray(res)) this.questions = res;
           })
           .catch(err => {
             alert(err.message);
