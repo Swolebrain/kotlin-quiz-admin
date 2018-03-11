@@ -148,7 +148,6 @@
           .then(res => {
             console.log(res);
             this.fetchData();
-            // this.questions.unshift(res);
           })
           .catch(err => alert(err.message || err));
       }
