@@ -1,8 +1,11 @@
 <template>
   <div>
-    <h4 v-if="!authenticated">
-      You are not logged in! Please <a @click="auth.login()">Log In</a> to continue.
-    </h4>
+    <div v-if="!authenticated">
+      <h4>
+        You are not logged in! Please <a @click="auth.login()">Log In</a> to continue.
+      </h4>
+      <h4>Get the <a href="https://play.google.com/apps/testing/com.swolebrain.kotlinquiz">Android App</a></h4>
+    </div>
     <div v-if="authenticated" class="home-container">
       <!-- New Question --> 
       <form class="create-question card" autocomplete="off">
