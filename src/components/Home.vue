@@ -11,6 +11,13 @@
       <form class="create-question card" autocomplete="off">
         <h3>Create new Question</h3>
         <div class="form-group">
+          <label for="q-text">Select Subject:</label>
+          <select v-model="subject">
+            <option selected value="kotlin_syntax">Kotlin Syntax</option>
+            <option value="android">Android</option>
+          </select>
+        </div>
+        <div class="form-group">
           <label for="q-text">Question Text:</label>
           <input type="text" id="q-text" v-model="newQuestionText" class="form-control" />
         </div>
@@ -87,6 +94,7 @@
       return {
         questions: [],
         newQuestionText: '',
+        subject: 'kotlin_syntax',
         newQuestionAnswerChoices: [
           {answer: '', correct: false},
           {answer: '', correct: false},
@@ -137,6 +145,7 @@
               correct: correct === 'true'
             })
           ),
+          subject: this.subject,
           adaptive: false,
           questionType: 'mc'};
         fetch(API_URL, {
@@ -150,7 +159,8 @@
         })
           .then(res => {
             console.log(res);
-            return res.json();
+            if (res.headers.get('Content-Type').indexOf('json') !== -1) return res.json();
+            return res.text();
           })
           .then(res => {
             console.log(res);
