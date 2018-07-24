@@ -3,7 +3,7 @@ import { AUTH_CONFIG } from './auth0-variables'
 import EventEmitter from 'eventemitter3'
 import router from './../router'
 
-export default class AuthService {
+class AuthService {
   authenticated = this.isAuthenticated()
   authNotifier = new EventEmitter()
 
@@ -53,7 +53,8 @@ export default class AuthService {
   }
 
   getIdToken () {
-    return this.idToken || localStorage.getItem('id_token');
+    if (!this.idToken) this.idToken = localStorage.getItem('id_token');
+    return this.idToken;
   }
 
   logout () {
@@ -74,3 +75,7 @@ export default class AuthService {
     return new Date().getTime() < expiresAt;
   }
 }
+
+const auth = new AuthService();
+
+export default auth;

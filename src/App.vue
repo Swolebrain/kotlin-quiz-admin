@@ -29,8 +29,8 @@
     </nav>
 
     <div class="container-fluid">
-      <router-view 
-        :auth="auth" 
+      <router-view
+        :auth="auth"
         :authenticated="authenticated">
       </router-view>
     </div>
@@ -38,9 +38,7 @@
 </template>
 
 <script>
-import AuthService from './auth/AuthService'
-
-const auth = new AuthService()
+import auth from './auth/AuthService'
 
 const { login, logout, authenticated, authNotifier } = auth
 

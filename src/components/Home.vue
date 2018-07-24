@@ -7,7 +7,7 @@
       <h4>Get the <a href="https://play.google.com/apps/testing/com.swolebrain.kotlinquiz">Android App</a></h4>
     </div>
     <div v-if="authenticated" class="home-container">
-      <!-- New Question --> 
+      <!-- New Question -->
       <form class="create-question card" autocomplete="off">
         <h3>Create new Question</h3>
         <div class="form-group">
@@ -69,14 +69,11 @@
 
       <!-- Existing questions -->
       <transition-group class="existing-questions" tag="div" name="list">
-          <div v-for="question in questions" :key="question._id" class="question card">
-            <div>{{question.question}}</div>
-            <ul>
-              <li v-for="answerChoice in question.answerChoices" :key="answerChoice.answer">
-                <span :class="{ correct: answerChoice.correct}">{{answerChoice.answer}}</span>
-              </li>
-            </ul>
-          </div>
+          <question-card
+            v-for="question in questions"
+            :auth="auth"
+            :question="question"
+            :key="question._id" />
       </transition-group>
     </div>
   </div>
@@ -84,9 +81,14 @@
 
 <script>
   import {API_URL} from '../globals';
+  import QuestionCard from './QuestionCard';
+
   export default {
     name: 'home',
     props: ['auth', 'authenticated'],
+    components: {
+      questionCard: QuestionCard
+    },
     created () {
       this.fetchData();
     },
@@ -205,15 +207,6 @@
     padding: 2rem;
     box-shadow: 0 1px 5px #333;
     margin: 2rem;
-  }
-  .question{
-    display:inline-block;
-    width:100%;
-    max-width: 450px;
-  }
-  .correct{
-    color: #8CD790;
-    font-weight: bold;
   }
 
   .list-enter-active {
