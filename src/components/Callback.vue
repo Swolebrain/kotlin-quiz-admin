@@ -7,10 +7,11 @@
 <script>
   export default {
     name: 'callback',
-    props: ['auth'],
+    props: ['authenticated'],
     data () {
-      this.auth.handleAuthentication()
-      return {}
+      return {
+        authenticated: JSON.parse(localStorage.getItem('authenticated'))
+      }
     }
   }
 </script>

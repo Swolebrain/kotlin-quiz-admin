@@ -5,68 +5,76 @@
         <div class="navbar-header">
           <a class="navbar-brand" href="#">Swolebrain - Kotlin</a>
 
-          <router-link :to="'/'"
-            class="btn btn-primary btn-margin">
-              Home
-          </router-link>
+          <router-link :to="'/'" class="btn btn-primary btn-margin">Home</router-link>
 
-          <button
-            class="btn btn-primary btn-margin"
-            v-if="!authenticated"
-            @click="login()">
-              Log In
-          </button>
+          <button class="btn btn-primary btn-margin" v-if="!authenticated" @click="login()">Log In</button>
 
-          <button
-            class="btn btn-primary btn-margin"
-            v-if="authenticated"
-            @click="logout()">
-              Log Out
-          </button>
-
+          <button class="btn btn-primary btn-margin" v-else @click="logout()">Log Out</button>
         </div>
       </div>
     </nav>
 
     <div class="container-fluid">
       <router-view
-        :auth="auth"
         :authenticated="authenticated">
-      </router-view>
+      </router-view>    
     </div>
+    <div>
+        <div id="firebaseui-auth-container"></div>
+    </div> 
   </div>
 </template>
 
 <script>
-import auth from './auth/AuthService'
-
-const { login, logout, authenticated, authNotifier } = auth
+import firebase from 'firebase';
+import firebaseui from 'firebaseui';
+import '../node_modules/firebaseui/dist/firebaseui.css';
 
 export default {
   name: 'app',
   data () {
-    authNotifier.on('authChange', authState => {
-      this.authenticated = authState.authenticated
-    })
-    return {
-      auth,
-      authenticated
-    }
+    return {}
   },
   methods: {
-    login,
-    logout
+    login: function () {
+      let uiConfig = {
+        signInOptions: [
+          firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+          firebase.auth.EmailAuthProvider.PROVIDER_ID
+        ],
+        callbacks: {
+          signInSuccessWithAuthResult () {
+            localStorage.setItem('authenticated', true);
+            window.location.href = '/';
+          }
+        }
+      };
+      var ui = new firebaseui.auth.AuthUI(firebase.auth());
+      ui.start('#firebaseui-auth-container', uiConfig);
+    },
+    logout: function () {
+      firebase.auth().signOut().then(() => {
+        console.log('called signOut');
+        localStorage.setItem('authenticated', false)
+        window.location.href = '/'
+      })
+    }
+  },
+  computed: {
+    authenticated () {
+      return JSON.parse(localStorage.getItem('authenticated'));
+    }
   }
-}
+};
 </script>
 
 <style>
-  @import '../node_modules/bootstrap/dist/css/bootstrap.css';
+@import "../node_modules/bootstrap/dist/css/bootstrap.css";
 
-  .btn-margin {
-    margin-top: 7px
-  }
-  *{
-    box-sizing: border-box;
-  }
+.btn-margin {
+  margin-top: 7px;
+}
+* {
+  box-sizing: border-box;
+}
 </style>

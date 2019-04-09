@@ -2,11 +2,11 @@
   <div>
     <div v-if="!authenticated">
       <h4>
-        You are not logged in! Please <a @click="auth.login()">Log In</a> to continue.
+        You are not logged in! Please <a>Log In</a> to continue.
       </h4>
       <h4>Get the <a href="https://play.google.com/apps/testing/com.swolebrain.kotlinquiz">Android App</a></h4>
     </div>
-    <div v-if="authenticated" class="home-container">
+    <div v-else class="home-container">
       <!-- New Question -->
       <form class="create-question card" autocomplete="off">
         <h3>Create new Question</h3>
@@ -67,30 +67,29 @@
         </div>
       </form>
 
-      <!-- Existing questions -->
+      <!-- 
       <transition-group class="existing-questions" tag="div" name="list">
           <question-card
             v-for="question in questions"
             :auth="auth"
             :question="question"
             :key="question._id" />
-      </transition-group>
+      </transition-group> Existing questions -->
     </div>
   </div>
 </template>
 
 <script>
-  import {API_URL} from '../globals';
-  import QuestionCard from './QuestionCard';
+  // import QuestionCard from './QuestionCard';
 
   export default {
     name: 'home',
-    props: ['auth', 'authenticated'],
-    components: {
+    props: ['authenticated'],
+    /* components: {
       questionCard: QuestionCard
-    },
+    }, */
     created () {
-      this.fetchData();
+      // aqui llamamos a fetch data de los collection de firestore
     },
     data () {
       return {
@@ -107,69 +106,8 @@
       }
     },
     methods: {
-      fetchData () {
-        if (!this.authenticated || !this.auth.isAuthenticated()) return;
-        console.log('Fetching data with token', this.auth.getIdToken());
-        fetch(API_URL, {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-            Authorization: 'Bearer ' + this.auth.getIdToken()
-          }
-        })
-          .then(res => {
-            console.log(res);
-            res.headers.forEach(function (val, key) {
-              console.log(key, '->', val);
-            });
-            if (res.status !== 200) throw new Error('Error: ' + res.status);
-            if (res.headers.get('Content-Type').indexOf('json') !== -1) return res.json();
-            return res.text();
-          })
-          .then(res => {
-            console.log(res);
-            if (Array.isArray(res)) this.questions = res;
-          })
-          .catch(err => {
-            alert(err.message);
-          });
-      },
-      submitQuestion () {
-        if (!this.auth.isAuthenticated()) return;
-        event.preventDefault();
-        let newQuestion = {
-          question: this.newQuestionText,
-          answerChoices: this.newQuestionAnswerChoices.filter(
-            ({answer, correct}, idx) => answer && answer.trim().length > 0
-          ).map(
-            ({answer, correct}, idx) => ({
-              answer,
-              correct: correct === 'true'
-            })
-          ),
-          subject: this.subject,
-          adaptive: false,
-          questionType: 'mc'};
-        fetch(API_URL, {
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-            Authorization: 'Bearer ' + this.auth.getIdToken()
-          },
-          method: 'POST',
-          body: JSON.stringify(newQuestion)
-        })
-          .then(res => {
-            console.log(res);
-            if (res.headers.get('Content-Type').indexOf('json') !== -1) return res.json();
-            return res.text();
-          })
-          .then(res => {
-            console.log(res);
-            this.fetchData();
-          })
-          .catch(err => alert(err.message || err));
-      }
+      fetchData () {},
+      submitQuestion () {}
     }
   }
 </script>

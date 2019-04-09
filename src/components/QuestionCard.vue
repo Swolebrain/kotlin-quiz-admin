@@ -18,13 +18,10 @@
 </template>
 
 <script>
-  import submitQuestion from '../network/submitQuestion';
-  import auth from '../auth/AuthService';
-
   export default {
     props: ['question'],
     data () {
-      console.log(this.props)
+      // console.log(this.props)
       return {
         isEditing: false,
         content: this.question.question,
@@ -41,13 +38,11 @@
         this.isEditing = !this.isEditing
       },
       async save () {
-        const patch = {
+        /* const patch = {
           question: this.content,
           answerChoices: this.options
         };
-        console.log(auth);
-        const saveResult = await submitQuestion(this.question._id, auth, patch);
-        console.log(saveResult);
+        const saveResult = await submitQuestion(this.question._id, auth, patch);  */
       }
     }
   }
