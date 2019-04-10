@@ -18,6 +18,8 @@
 </template>
 
 <script>
+  const fireConst = require('../firebase/firebaseConfig.js')
+
   export default {
     props: ['question'],
     data () {
@@ -38,11 +40,12 @@
         this.isEditing = !this.isEditing
       },
       async save () {
-        /* const patch = {
+        const patch = {
           question: this.content,
           answerChoices: this.options
         };
-        const saveResult = await submitQuestion(this.question._id, auth, patch);  */
+        /* const saveResult = await submitQuestion(this.question._id, auth, patch);  */
+        await fireConst.questionCollection.doc(this.question._id).update(patch)
       }
     }
   }

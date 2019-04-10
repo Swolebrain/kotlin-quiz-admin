@@ -26,9 +26,10 @@
 </template>
 
 <script>
-import firebase from 'firebase';
+import firebase from 'firebase'
 import firebaseui from 'firebaseui';
 import '../node_modules/firebaseui/dist/firebaseui.css';
+const fireConst = require('./firebase/firebaseConfig.js')
 
 export default {
   name: 'app',
@@ -38,6 +39,7 @@ export default {
   methods: {
     login: function () {
       let uiConfig = {
+        signInSuccessUrl: '/',
         signInOptions: [
           firebase.auth.GoogleAuthProvider.PROVIDER_ID,
           firebase.auth.EmailAuthProvider.PROVIDER_ID
@@ -45,15 +47,16 @@ export default {
         callbacks: {
           signInSuccessWithAuthResult () {
             localStorage.setItem('authenticated', true);
-            window.location.href = '/';
+            // window.location.href = '/';
+            return true;
           }
         }
       };
-      var ui = new firebaseui.auth.AuthUI(firebase.auth());
+      var ui = new firebaseui.auth.AuthUI(fireConst.auth);
       ui.start('#firebaseui-auth-container', uiConfig);
     },
     logout: function () {
-      firebase.auth().signOut().then(() => {
+      fireConst.auth.signOut().then(() => {
         console.log('called signOut');
         localStorage.setItem('authenticated', false)
         window.location.href = '/'

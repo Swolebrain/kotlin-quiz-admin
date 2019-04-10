@@ -65,31 +65,29 @@
         <div class="form-group">
           <button class="btn btn-primary" @click="submitQuestion">Submit!</button>
         </div>
-      </form>
-
-      <!-- 
+      </form>      
       <transition-group class="existing-questions" tag="div" name="list">
           <question-card
             v-for="question in questions"
-            :auth="auth"
             :question="question"
-            :key="question._id" />
-      </transition-group> Existing questions -->
+            v-bind:key="question._id" />
+      </transition-group> Existing questions
     </div>
   </div>
 </template>
 
 <script>
-  // import QuestionCard from './QuestionCard';
+  import QuestionCard from './QuestionCard';
+  const fireConst = require('../firebase/firebaseConfig.js')
 
   export default {
     name: 'home',
     props: ['authenticated'],
-    /* components: {
+    components: {
       questionCard: QuestionCard
-    }, */
+    },
     created () {
-      // aqui llamamos a fetch data de los collection de firestore
+      this.fetchData();
     },
     data () {
       return {
@@ -106,8 +104,43 @@
       }
     },
     methods: {
-      fetchData () {},
-      submitQuestion () {}
+      fetchData () {
+        if (fireConst.auth.currentUser == null) return;
+        fireConst.questionCollection.get().then(snapshot => {
+          snapshot.forEach(doc => {
+            const currentQuestion = doc.data();
+            this.questions.push({ _id: doc.id, ...currentQuestion });
+          })
+          console.log(this.questions)
+        }).catch(err => {
+          console.log('Error getting documents', err);
+        });
+      },
+      submitQuestion () {
+        if (fireConst.auth.currentUser == null) return;
+        event.preventDefault();
+        let newQuestion = {
+          question: this.newQuestionText,
+          answerChoices: this.newQuestionAnswerChoices.filter(
+            ({answer, correct}, idx) => answer && answer.trim().length > 0
+          ).map(
+            ({answer, correct}, idx) => ({
+              _id: idx,
+              answer,
+              correct: correct === 'true'
+            })
+          ),
+          subject: this.subject,
+          adaptive: false,
+          questionType: 'mc'};
+
+        // console.log(newQuestion);
+        fireConst.questionCollection.add(newQuestion).then(ref => {
+          console.log('Document written!')
+        }).catch((error) => {
+          console.log(error);
+        });
+      }
     }
   }
 </script>
