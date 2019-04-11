@@ -39,7 +39,7 @@ export default {
   methods: {
     login: function () {
       let uiConfig = {
-        signInSuccessUrl: '/',
+        signInFlow: 'popup',
         signInOptions: [
           firebase.auth.GoogleAuthProvider.PROVIDER_ID,
           firebase.auth.EmailAuthProvider.PROVIDER_ID
@@ -47,8 +47,8 @@ export default {
         callbacks: {
           signInSuccessWithAuthResult () {
             localStorage.setItem('authenticated', true);
-            // window.location.href = '/';
-            return true;
+            window.location.href = '/';
+            return false;
           }
         }
       };
