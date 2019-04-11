@@ -12,7 +12,7 @@
         <h3>Create new Question</h3>
         <div class="form-group">
           <label for="q-text">Select Subject:</label>
-          <select v-model="subject">
+          <select v-model="subject" @change="fetchData">
             <option selected value="kotlin_syntax">Kotlin Syntax</option>
             <option value="android">Android</option>
           </select>
@@ -104,17 +104,18 @@
       }
     },
     methods: {
-      fetchData () {
+      async fetchData () {
         if (fireConst.auth.currentUser == null) return;
-        fireConst.questionCollection.get().then(snapshot => {
+        try {
+          this.questions = [];
+          const snapshot = await fireConst.db.collection(this.subject).get();
           snapshot.forEach(doc => {
             const currentQuestion = doc.data();
             this.questions.push({ _id: doc.id, ...currentQuestion });
           })
-          console.log(this.questions)
-        }).catch(err => {
-          console.log('Error getting documents', err);
-        });
+        } catch (e) {
+          console.log('Error getting documents', e);
+        }
       },
       submitQuestion () {
         if (fireConst.auth.currentUser == null) return;
@@ -133,10 +134,9 @@
           subject: this.subject,
           adaptive: false,
           questionType: 'mc'};
-
-        // console.log(newQuestion);
-        fireConst.questionCollection.add(newQuestion).then(ref => {
+        fireConst.db.collection(this.subject).add(newQuestion).then(ref => {
           console.log('Document written!')
+          this.fetchData()
         }).catch((error) => {
           console.log(error);
         });
