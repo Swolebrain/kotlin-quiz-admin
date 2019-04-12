@@ -82,7 +82,9 @@
 
   export default {
     name: 'home',
-    props: ['authenticated'],
+    props: {
+      'authenticated': Boolean
+    },
     components: {
       questionCard: QuestionCard
     },

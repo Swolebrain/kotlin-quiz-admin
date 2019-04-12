@@ -44,8 +44,11 @@
           question: this.content,
           answerChoices: this.options
         };
-        /* const saveResult = await submitQuestion(this.question._id, auth, patch);  */
-        await fireConst.questionCollection.doc(this.question._id).update(patch)
+        try {
+          await fireConst.db.collection(this.question.subject).doc(this.question._id).update(patch)
+        } catch (e) {
+          console.log('Error: ' + e)
+        }
       }
     }
   }
