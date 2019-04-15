@@ -60,7 +60,6 @@ export default {
           }
         }
       };
-      // eslint-disable-next-line new-cap
       let ui = firebaseui.auth.AuthUI.getInstance();
       if (!ui) {
         ui = new firebaseui.auth.AuthUI(fireConst.auth);

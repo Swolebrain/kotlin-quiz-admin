@@ -1,11 +1,11 @@
 <template>
-    <div class="modal" v-bind:class="customClass" v-bind:style="{ display: show ? 'block': 'none'}">
+    <div class="modal" v-bind:class="customClass" v-bind:style="{ display: show ? 'flex': 'none'}">
         <div class="overlay" @click="closeCallback()" />
-        <div class="modal_content">
-            <slot></slot>
+        <div class="modal_content_container">
             <button title="Close" class="close_modal" @click="closeCallback()">
               <i class="fas fa-times"></i>
             </button>
+            <slot class="modal_content"></slot>
         </div>   
     </div>    
 </template>
@@ -20,65 +20,38 @@ export default {
 }
 </script>
 <style scoped>
-.modal {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 990;
+.overlay {
+    width: 100%;
+    z-index: 1;
+    opacity: 0.7;
+    background-color: #000000;
 }
 
-.modal .overlay {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 995;
-  background: rgba(0,0,0,0.85);
+.modal_content_container{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin-left: -75%;
+    margin-top: 25vh;
+    height: 50vh;
+    z-index: 2;
+    background-color: #ffffff;
+    padding: 2vh;
 }
 
-.modal .modal_content {
-  z-index: 999;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  max-height: 90%;
-  overflow: auto;
-  background: #fff;
-  box-sizing: border-box;
-  padding: 20px;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.7);
-  border-radius: 4px;
-  width: 520px; /* This just a default width */
+.modal_content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-.modal .modal_content > h2 {
-  font-size: 28px;
-  font-weight: 200;
-  margin: 20px 0 40px;
-  text-align: center;
-}
-
-.modal .modal_content .buttons_wrapper {
-  padding: 20px;
-}
-
-.modal .close_modal {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  cursor: pointer;
+.close_modal{
+  align-self: flex-end;
   font-size: 18px;
   opacity: 0.5;
   background: none;
   border: none;
-  transition: opacity 0.2s ease;
 }
 
-.modal .close_modal:hover {
-  opacity: 0.9;
-}
 </style>
