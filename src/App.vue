@@ -20,11 +20,10 @@
         @login-user="login">
       </router-view>    
     </div>
-    <div>
-        <div id="firebaseui-auth-container"></div>
-    </div> 
 
-
+    <Modal v-bind="{ closeCallback: toggleModal, show, customClass: 'custom_modal_class'}">
+      <div id="firebaseui-auth-container"></div>  
+    </Modal>
   </div>
 </template>
 
@@ -32,12 +31,18 @@
 import firebase from 'firebase'
 import firebaseui from 'firebaseui';
 import '../node_modules/firebaseui/dist/firebaseui.css';
-const fireConst = require('./firebase/firebaseConfig.js')
+import Modal from './components/Modal.vue';
+const fireConst = require('./firebase/firebaseConfig.js');
 
 export default {
   name: 'app',
+  components: {
+    Modal
+  },
   data () {
-    return {}
+    return {
+      show: false
+    }
   },
   methods: {
     login: function () {
@@ -55,8 +60,13 @@ export default {
           }
         }
       };
-      var ui = new firebaseui.auth.AuthUI(fireConst.auth);
+      // eslint-disable-next-line new-cap
+      let ui = firebaseui.auth.AuthUI.getInstance();
+      if (!ui) {
+        ui = new firebaseui.auth.AuthUI(fireConst.auth);
+      }
       ui.start('#firebaseui-auth-container', uiConfig);
+      this.toggleModal();
     },
     logout: function () {
       fireConst.auth.signOut().then(() => {
@@ -64,6 +74,9 @@ export default {
         localStorage.setItem('authenticated', false)
         window.location.href = '/'
       })
+    },
+    toggleModal: function () {
+      this.show = !this.show;
     }
   },
   computed: {
