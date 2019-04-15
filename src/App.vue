@@ -16,12 +16,15 @@
 
     <div class="container-fluid">
       <router-view
-        :authenticated="authenticated">
+        :authenticated="authenticated"
+        @login-user="login">
       </router-view>    
     </div>
     <div>
         <div id="firebaseui-auth-container"></div>
     </div> 
+
+
   </div>
 </template>
 

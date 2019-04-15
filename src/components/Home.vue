@@ -2,7 +2,7 @@
   <div>
     <div v-if="!authenticated">
       <h4>
-        You are not logged in! Please <a>Log In</a> to continue.
+        You are not logged in! Please <a @click="callLogIn">Log In</a> to continue.
       </h4>
       <h4>Get the <a href="https://play.google.com/apps/testing/com.swolebrain.kotlinquiz">Android App</a></h4>
     </div>
@@ -142,6 +142,9 @@
         }).catch((error) => {
           console.log(error);
         });
+      },
+      callLogIn () {
+        this.$emit('login-user')
       }
     }
   }
