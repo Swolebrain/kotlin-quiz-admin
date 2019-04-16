@@ -1,7 +1,7 @@
 <template>
 <div class="alert-container" v-bind:style="{ opacity: show? 1:0 }" @click="closeCallback()">
     <div id="div-alert" :class="['alert',type]" role="alert">
-        <strong>Holy guacamole!</strong> You should check in on some of those fields below
+        <span>{{text}}</span>
         <button type="button" class="close"  aria-label="Close" @click="closeCallback()">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -14,7 +14,8 @@ export default {
   props: {
     show: Boolean,
     type: String,
-    closeCallback: Function
+    closeCallback: Function,
+    text: String
   }
 }
 </script>
@@ -24,5 +25,6 @@ export default {
     position: sticky;
     width: 90%;
     bottom:0;
+    transition: opacity 0.5s ease;
 }
 </style>

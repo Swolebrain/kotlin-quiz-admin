@@ -74,7 +74,7 @@
             v-bind:key="question._id" />
       </transition-group> 
 
-      <alert type="alert-warning" v-bind="{show:showNotification, closeCallback: toggleNotification}"/>
+      <alertPopUp v-bind="{show:showNotification, closeCallback: toggleNotification, type: alertType, text: alertText}"/>
     </div>
   </div>
 </template>
@@ -91,7 +91,7 @@
     },
     components: {
       questionCard: QuestionCard,
-      alert: Alert
+      alertPopUp: Alert
     },
     created () {
       this.fetchData();
@@ -108,7 +108,9 @@
           {answer: '', correct: false},
           {answer: '', correct: false}
         ],
-        showNotification: false
+        showNotification: false,
+        alertType: 'alert-warning',
+        alertText: ''
       }
     },
     methods: {
@@ -146,8 +148,13 @@
           console.log('Document written!')
           this.fetchData()
           this.showNotification = true
+          this.alertType = 'alert-success'
+          this.alertText = 'Question added!'
         }).catch((error) => {
           console.log(error);
+          this.showNotification = true
+          this.alertType = 'alert-danger'
+          this.alertText = 'Error adding question: ' + error
         });
       },
       callLogIn () {
