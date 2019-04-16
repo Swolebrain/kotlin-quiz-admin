@@ -21,9 +21,10 @@
       </router-view>    
     </div>
 
-    <Modal v-bind="{ closeCallback: toggleModal, show, customClass: 'custom_modal_class'}">
+    <Modal v-bind="{ closeCallback: toggleModal, show}">
       <div id="firebaseui-auth-container"></div>  
     </Modal>
+
   </div>
 </template>
 

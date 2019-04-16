@@ -65,19 +65,23 @@
         <div class="form-group">
           <button class="btn btn-primary" @click="submitQuestion">Submit!</button>
         </div>
-      </form>      
+      </form>
+      Existing questions      
       <transition-group class="existing-questions" tag="div" name="list">
           <question-card
             v-for="question in questions"
             :question="question"
             v-bind:key="question._id" />
-      </transition-group> Existing questions
+      </transition-group> 
+
+      <alert type="alert-warning" v-bind="{show:showNotification, closeCallback: toggleNotification}"/>
     </div>
   </div>
 </template>
 
 <script>
   import QuestionCard from './QuestionCard';
+  import Alert from '../components/Alert.vue';
   const fireConst = require('../firebase/firebaseConfig.js')
 
   export default {
@@ -86,7 +90,8 @@
       'authenticated': Boolean
     },
     components: {
-      questionCard: QuestionCard
+      questionCard: QuestionCard,
+      alert: Alert
     },
     created () {
       this.fetchData();
@@ -102,7 +107,8 @@
           {answer: '', correct: false},
           {answer: '', correct: false},
           {answer: '', correct: false}
-        ]
+        ],
+        showNotification: false
       }
     },
     methods: {
@@ -139,12 +145,16 @@
         fireConst.db.collection(this.subject).add(newQuestion).then(ref => {
           console.log('Document written!')
           this.fetchData()
+          this.showNotification = true
         }).catch((error) => {
           console.log(error);
         });
       },
       callLogIn () {
         this.$emit('login-user')
+      },
+      toggleNotification () {
+        this.showNotification = !this.showNotification;
       }
     }
   }

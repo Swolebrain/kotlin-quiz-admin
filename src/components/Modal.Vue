@@ -20,6 +20,8 @@ export default {
 }
 </script>
 <style scoped>
+
+
 .overlay {
     width: 100%;
     z-index: 1;
