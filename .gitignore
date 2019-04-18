@@ -8,3 +8,4 @@ selenium-debug.log
 auth0-variables.js
 firebaseCredential.js
 .env
+.idea

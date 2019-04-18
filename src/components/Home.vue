@@ -66,14 +66,21 @@
           <button class="btn btn-primary" @click="submitQuestion">Submit!</button>
         </div>
       </form>
-      Existing questions      
-      <transition-group class="existing-questions" tag="div" name="list">
+      <div class="right-pane">
+        <h2>Manage Questions</h2>
+        <div>
+          <h3>Filter by Category:</h3>
+          <select>
+            <option v-for="category in categories" :value="category">{{category}}</option>
+          </select>
+        </div>
+        <transition-group class="existing-questions" tag="div" name="list">
           <question-card
             v-for="question in questions"
             :question="question"
             v-bind:key="question._id" />
-      </transition-group> 
-
+        </transition-group>
+      </div>
       <alertPopUp v-bind="{show:showNotification, closeCallback: toggleNotification, type: alertType, text: alertText}"/>
     </div>
   </div>
@@ -111,6 +118,13 @@
         showNotification: false,
         alertType: 'alert-warning',
         alertText: ''
+      }
+    },
+    computed: {
+      categories () {
+        const uniques = (this.questions || []).reduce((acc, cur) =>
+          Object.assign(acc, {[cur.subject]: true}), {});
+        return Object.keys(uniques);
       }
     },
     methods: {
@@ -180,6 +194,9 @@
   .create-question {
     align-self: flex-start;
     flex-basis: 360px;
+  }
+  .right-pane{
+    flex:1;
   }
   .existing-questions {
     display: flex;
