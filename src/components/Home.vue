@@ -12,9 +12,8 @@
         <h3>Create new Question</h3>
         <div class="form-group">
           <label for="q-text">Select Subject:</label>
-          <select v-model="subject" @change="fetchData">
-            <option selected value="kotlin_syntax">Kotlin Syntax</option>
-            <option value="android">Android</option>
+          <select v-model="subject">
+            <option v-for="collection in collections" :value="collection">{{collection}}</option>
           </select>
         </div>
         <div class="form-group">
@@ -70,13 +69,14 @@
         <h2>Manage Questions</h2>
         <div>
           <h3>Filter by Category:</h3>
-          <select>
-            <option v-for="category in categories" :value="category">{{category}}</option>
+          <select @change="filterQuestions" v-model="selectedFilter">
+            <option value="all">all</option>
+            <option v-for="category in categories" v-bind:value="category">{{category}}</option>
           </select>
         </div>
         <transition-group class="existing-questions" tag="div" name="list">
           <question-card
-            v-for="question in questions"
+            v-for="question in filteredQuestions"
             :question="question"
             v-bind:key="question._id" />
         </transition-group>
@@ -89,8 +89,9 @@
 <script>
   import QuestionCard from './QuestionCard';
   import Alert from '../components/Alert.vue';
+  import {questionCollections} from '../firebase/collections.js';
   const fireConst = require('../firebase/firebaseConfig.js')
-
+  
   export default {
     name: 'home',
     props: {
@@ -106,6 +107,8 @@
     data () {
       return {
         questions: [],
+        filteredQuestions: [],
+        collections: questionCollections,
         newQuestionText: '',
         subject: 'kotlin_syntax',
         newQuestionAnswerChoices: [
@@ -117,7 +120,8 @@
         ],
         showNotification: false,
         alertType: 'alert-warning',
-        alertText: ''
+        alertText: '',
+        selectedFilter: ''
       }
     },
     computed: {
@@ -132,11 +136,13 @@
         if (fireConst.auth.currentUser == null) return;
         try {
           this.questions = [];
-          const snapshot = await fireConst.db.collection(this.subject).get();
-          snapshot.forEach(doc => {
-            const currentQuestion = doc.data();
-            this.questions.push({ _id: doc.id, ...currentQuestion });
-          })
+          questionCollections.forEach(async (collection, idx) => {
+            const snapshot = await fireConst.db.collection(collection).get();
+            snapshot.forEach(doc => {
+              const currentQuestion = doc.data();
+              this.questions.push({ _id: doc.id, ...currentQuestion });
+            })
+          });
         } catch (e) {
           console.log('Error getting documents', e);
         }
@@ -176,6 +182,14 @@
       },
       toggleNotification () {
         this.showNotification = !this.showNotification;
+      },
+      filterQuestions () {
+        if (fireConst.auth.currentUser == null) return;
+
+        this.filteredQuestions = [];
+        if (this.selectedFilter === 'all') this.filteredQuestions = this.questions;
+        else this.filteredQuestions = this.questions.filter(currentQuestion => currentQuestion.subject === this.selectedFilter);
+        console.log(this.filteredQuestions);
       }
     }
   }

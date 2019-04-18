@@ -25,6 +25,6 @@ export default {
     position: sticky;
     width: 90%;
     bottom:0;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.5s ease-in-out;
 }
 </style>

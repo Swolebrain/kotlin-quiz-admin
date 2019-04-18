@@ -46,9 +46,11 @@
         };
         try {
           await fireConst.db.collection(this.question.subject).doc(this.question._id).update(patch)
+          this.question.question = this.content
         } catch (e) {
           console.log('Error: ' + e)
         }
+        this.toggleEditing();
       }
     }
   }
